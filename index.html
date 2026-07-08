@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DJ Center Cafe Menu</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f3f7f4; 
+            color: #1b3322;
+            overflow-x: hidden;
+        }
+        
+        /* PAGE 1: WELCOME SCREEN */
+        #welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0b2214 0%, #153a24 50%, #06150c 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 30;
+            opacity: 1;
+            transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1), transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .welcome-text {
+            font-size: 3.2rem;
+            font-weight: 400;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            color: transparent;
+            background: linear-gradient(135deg, #ffeaa7 0%, #e5c158 50%, #b38600 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0px 4px 12px rgba(0,0,0,0.4);
+            animation: royalFade 2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+        .sub-text {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-top: 15px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #fcf8f2;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* PAGE 2: LOGO SCREEN */
+        #logo-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #102e1c 0%, #07170e 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1), transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .intro-logo-box {
+            width: 85%;
+            max-width: 320px;
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            transform: scale(0.6) rotate(-10deg);
+            transition: all 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.15);
+        }
+        .intro-logo-animate {
+            transform: scale(1) rotate(0deg);
+        }
+        .logo-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 50%;
+        }
+
+        /* PAGE 3: MAIN MENU CONTAINER */
+        #main-content {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1), transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            display: none;
+        }
+        header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 2px dotted #c29b38;
+            margin-bottom: 30px;
+        }
+        .mini-logo-container {
+            width: 120px;
+            margin: 0 auto 15px auto;
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(21, 58, 36, 0.15);
+        }
+        .cafe-name {
+            font-size: 2.6rem;
+            color: #153a24;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .cafe-tagline {
+            font-size: 1rem;
+            color: #556b2f;
+            font-style: italic;
+            font-weight: 500;
+            font-family: 'Segoe UI', sans-serif;
+            margin-top: 5px;
+        }
+        
+        /* GREENERY THEME CATEGORIES & ITEMS */
+        .category-title {
+            font-size: 1.2rem;
+            color: #fff;
+            background: linear-gradient(90deg, #153a24 0%, #2e5a3c 100%);
+            padding: 12px 18px;
+            margin: 35px 0 18px 0;
+            border-radius: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-family: 'Segoe UI', sans-serif;
+            border-left: 6px solid #e5c158;
+            box-shadow: 0 4px 10px rgba(21, 58, 36, 0.15);
+        }
+        .menu-item {
+            background: white;
+            padding: 14px 18px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(27, 51, 34, 0.04);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #eef3ef;
+        }
+        .item-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #153a24;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .item-price {
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: #b38600;
+            font-family: 'Segoe UI', sans-serif;
+            white-space: nowrap;
+        }
+        .customizer-item {
+            background: #fbfdfb;
+            border: 1px dashed #c29b38;
+        }
+        .customizer-item .item-name {
+            color: #617366;
+            font-style: italic;
+            font-weight: normal;
+        }
+
+        @keyframes royalFade {
+            0% { opacity: 0; transform: scale(0.85); letter-spacing: 4px; }
+            100% { opacity: 1; transform: scale(1); letter-spacing: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="welcome-screen">
+        <div class="welcome-text">Welcome</div>
+        <div class="sub-text">To Culinary Excellence</div>
+    </div>
+
+    <div id="logo-screen">
+        <div class="intro-logo-box" id="intro-logo">
+            <img src="logo.jpg" alt="DJ Center Cafe Logo" class="logo-img">
+        </div>
+    </div>
+
+    <div id="main-content">
+        <header>
+            <div class="mini-logo-container">
+                <img src="logo.jpg" alt="DJ Center Cafe Logo" class="logo-img">
+            </div>
+            <h1 class="cafe-name">DJ Center Cafe</h1>
+            <p class="cafe-tagline">Good Food Good Mood</p>
+        </header>
+
+        <div class="category-title">☕ Hot Beverages</div>
+        <div class="menu-item"><span class="item-name">Tea</span><span class="item-price">₹10</span></div>
+        <div class="menu-item"><span class="item-name">Masala Tea</span><span class="item-price">₹20</span></div>
+        <div class="menu-item"><span class="item-name">Allam Tea</span><span class="item-price">₹20</span></div>
+        <div class="menu-item"><span class="item-name">Elachi Tea</span><span class="item-price">₹20</span></div>
+        <div class="menu-item"><span class="item-name">Green Tea</span><span class="item-price">₹20</span></div>
+        <div class="menu-item"><span class="item-name">Black Tea</span><span class="item-price">₹20</span></div>
+        <div class="menu-item"><span class="item-name">Thulasi Tea</span><span class="item-price">₹20</span></div>
+        <div class="menu-item"><span class="item-name">Bellam Tea</span><span class="item-price">₹20</span></div>
+        <div class="menu-item"><span class="item-name">Pudhina Tea</span><span class="item-price">₹20</span></div>
+        <div class="menu-item"><span class="item-name">Erani Tea</span><span class="item-price">₹20</span></div>
+        <div class="menu-item"><span class="item-name">Chocolate Tea</span><span class="item-price">₹20</span></div>
+        <div class="menu-item"><span class="item-name">Dhalchina Chekka Tea</span><span class="item-price">₹20</span></div>
+        <div class="menu-item"><span class="item-name">Miriyala Tea</span><span class="item-price">₹20</span></div>
+        <div class="menu-item"><span class="item-name">Allam Nimma Tea</span><span class="item-price">₹20</span></div>
+        <div class="menu-item"><span class="item-name">Boost</span><span class="item-price">₹20</span></div>
+        <div class="menu-item"><span class="item-name">Horlicks</span><span class="item-price">₹20</span></div>
+        <div class="menu-item"><span class="item-name">Badam Tea</span><span class="item-price">₹20</span></div>
+        <div class="menu-item"><span class="item-name">Pista Tea</span><span class="item-price">₹30</span></div>
+        <div class="menu-item"><span class="item-name">Biscuit</span><span class="item-price">₹5</span></div>
+
+        <div class="category-title">🍹 Refreshing Juices</div>
+        <div class="menu-item"><span class="item-name">Orange Juice</span><span class="item-price">₹30</span></div>
+        <div class="menu-item"><span class="item-name">Watermelon Juice</span><span class="item-price">₹40</span></div>
+        <div class="menu-item"><span class="item-name">Pineapple Juice</span><span class="item-price">₹40</span></div>
+        <div class="menu-item"><span class="item-name">Grapes Juice</span><span class="item-price">₹30</span></div>
+        <div class="menu-item"><span class="item-name">Carrot Juice</span><span class="item-price">₹40</span></div>
+        <div class="menu-item"><span class="item-name">Beetroot Juice</span><span class="item-price">₹40</span></div>
+        <div class="menu-item"><span class="item-name">Mango Juice</span><span class="item-price">₹50</span></div>
+        <div class="menu-item"><span class="item-name">Apple Juice</span><span class="item-price">₹50</span></div>
+        <div class="menu-item"><span class="item-name">Dhanimma Juice</span><span class="item-price">₹50</span></div>
+        <div class="menu-item"><span class="item-name">Pineapple Pudhina Juice</span><span class="item-price">₹50</span></div>
+        <div class="menu-item"><span class="item-name">Mixed Fruits Juice</span><span class="item-price">₹50</span></div>
+        <div class="menu-item"><span class="item-name">Cucumber Juice</span><span class="item-price">₹30</span></div>
+        <div class="menu-item"><span class="item-name">Banana Juice</span><span class="item-price">₹40</span></div>
+        <div class="menu-item"><span class="item-name">Sapota Juice</span><span class="item-price">₹40</span></div>
+        <div class="menu-item"><span class="item-name">Dragon Fruit Juice</span><span class="item-price">₹50</span></div>
+        <div class="menu-item"><span class="item-name">Avocado Juice</span><span class="item-price">₹100</span></div>
+        <div class="menu-item"><span class="item-name">Kharbuja Juice</span><span class="item-price">₹30</span></div>
+        <div class="menu-item"><span class="item-name">Papaya Juice</span><span class="item-price">₹30</span></div>
+
+        <div class="category-title">🍸 Exotic Mocktails</div>
+        <div class="menu-item"><span class="item-name">Mint Mojito</span><span class="item-price">₹60</span></div>
+        <div class="menu-item"><span class="item-name">Blue Angel</span><span class="item-price">₹60</span></div>
+        <div class="menu-item"><span class="item-name">Black Currant Mocktail</span><span class="item-price">₹60</span></div>
+        <div class="menu-item"><span class="item-name">Green Apple Mocktail</span><span class="item-price">₹60</span></div>
+        <div class="menu-item"><span class="item-name">Orange Crush</span><span class="item-price">₹60</span></div>
+
+        <div class="category-title">🥛 Creamy Milkshakes</div>
+        <div class="menu-item"><span class="item-name">Vennela Milk Shake</span><span class="item-price">₹60</span></div>
+        <div class="menu-item"><span class="item-name">Chocolate Milk Shake</span><span class="item-price">₹70</span></div>
+        <div class="menu-item"><span class="item-name">Kitkat Milk Shake</span><span class="item-price">₹80</span></div>
+        <div class="menu-item"><span class="item-name">Oreo Milk Shake</span><span class="item-price">₹70</span></div>
+        <div class="menu-item"><span class="item-name">Butterscotch Milk Shake</span><span class="item-price">₹70</span></div>
+        <div class="menu-item"><span class="item-name">Banana Milk Shake</span><span class="item-price">₹70</span></div>
+        <div class="menu-item"><span class="item-name">Chaco Chip Milk Shake</span><span class="item-price">₹70</span></div>
+        <div class="menu-item"><span class="item-name">Dryfruit Milk Shake</span><span class="item-price">₹100</span></div>
+        <div class="menu-item"><span class="item-name">Sapota Milk Shake</span><span class="item-price">₹70</span></div>
+        <div class="menu-item"><span class="item-name">Avocado Milk Shake</span><span class="item-price">₹100</span></div>
+        <div class="menu-item"><span class="item-name">Dragon Fruit Milk Shake</span><span class="item-price">₹80</span></div>
+        <div class="menu-item"><span class="item-name">Sitaphal Milk Shake</span><span class="item-price">₹100</span></div>
+        <div class="menu-item"><span class="item-name">Mango Milk Shake</span><span class="item-price">₹80</span></div>
+        <div class="menu-item"><span class="item-name">Strawberry Milk Shake</span><span class="item-price">₹80</span></div>
+        <div class="menu-item"><span class="item-name">Blue Berry Milk Shake</span><span class="item-price">₹80</span></div>
+        <div class="menu-item"><span class="item-name">Black Currant Milk Shake</span><span class="item-price">₹80</span></div>
+
+        <div class="category-title">🥤 Premium Thick Shakes</div>
+        <div class="menu-item"><span class="item-name">Vennela Thick Shake</span><span class="item-price">₹90</span></div>
+        <div class="menu-item"><span class="item-name">Chocolate Thick Shake</span><span class="item-price">₹100</span></div>
+        <div class="menu-item"><span class="item-name">Kitkat Thick Shake</span><span class="item-price">₹100</span></div>
+        <div class="menu-item"><span class="item-name">Oreo Thick Shake</span><span class="item-price">₹100</span></div>
+        <div class="menu-item"><span class="item-name">Butterscotch Thick Shake</span><span class="item-price">₹100</span></div>
+        <div class="menu-item"><span class="item-name">Banana Thick Shake</span><span class="item-price">₹100</span></div>
+        <div class="menu-item"><span class="item-name">Chaco Chip Thick Shake</span><span class="item-price">₹100</span></div>
+        <div class="menu-item"><span class="item-name">Dryfruit Thick Shake</span><span class="item-price">₹120</span></div>
+        <div class="menu-item"><span class="item-name">Sapota Thick Shake</span><span class="item-price">₹100</span></div>
+        <div class="menu-item"><span class="item-name">Avocado Thick Shake</span><span class="item-price">₹120</span></div>
+        <div class="menu-item"><span class="item-name">Dragon Fruit Thick Shake</span><span class="item-price">₹100</span></div>
+        <div class="menu-item"><span class="item-name">Sitaphal Thick Shake</span><span class="item-price">₹130</span></div>
+        <div class="menu-item"><span class="item-name">Mango Thick Shake</span><span class="item-price">₹100</span></div>
+        <div class="menu-item"><span class="item-name">Strawberry Thick Shake</span><span class="item-price">₹100</span></div>
+        <div class="menu-item"><span class="item-name">Blue Berry Thick Shake</span><span class="item-price">₹100</span></div>
+        <div class="menu-item"><span class="item-name">Black Currant Thick Shake</span><span class="item-price">₹100</span></div>
+
+        <div class="category-title">🍟 Appetizers & Quick Bites</div>
+        <div class="menu-item"><span class="item-name">🌽 Corn Samosa (Plate)</span><span class="item-price">₹30</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Samosa (Plate)</span><span class="item-price">₹50</span></div>
+        <div class="menu-item"><span class="item-name">Prawns Samosa (Plate)</span><span class="item-price">₹69</span></div>
+        <div class="menu-item"><span class="item-name">Thread Chicken (4 Sticks)</span><span class="item-price">₹99</span></div>
+        <div class="menu-item"><span class="item-name">Prawn Lollipop (6 Pcs)</span><span class="item-price">₹129</span></div>
+        <div class="menu-item"><span class="item-name">Fish Fingers</span><span class="item-price">₹119</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Popcorn (10 Pcs)</span><span class="item-price">₹80</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Nuggets (6 Pcs)</span><span class="item-price">₹90</span></div>
+        <div class="menu-item"><span class="item-name">Veg Nuggets (6 Pcs)</span><span class="item-price">₹70</span></div>
+        <div class="menu-item"><span class="item-name">French Fries</span><span class="item-price">₹70</span></div>
+
+        <div class="category-title">🥟 Delicious Momos</div>
+        <div class="menu-item"><span class="item-name">Steamed Veg Momos</span><span class="item-price">₹89</span></div>
+        <div class="menu-item"><span class="item-name">Steamed Paneer Momos</span><span class="item-price">₹99</span></div>
+        <div class="menu-item"><span class="item-name">Steamed Chicken Momos</span><span class="item-price">₹119</span></div>
+        <div class="menu-item"><span class="item-name">Fried Veg Momos</span><span class="item-price">₹99</span></div>
+        <div class="menu-item"><span class="item-name">Fried Paneer Momos</span><span class="item-price">₹119</span></div>
+        <div class="menu-item"><span class="item-name">Fried Chicken Momos</span><span class="item-price">₹129</span></div>
+        <div class="menu-item"><span class="item-name">Kurkure Momos</span><span class="item-price">₹149</span></div>
+
+        <div class="category-title">🍕 Gourmet Pizzas</div>
+        <div class="menu-item"><span class="item-name">Margherita Pizza</span><span class="item-price">₹120</span></div>
+        <div class="menu-item"><span class="item-name">Corn Pizza</span><span class="item-price">₹139</span></div>
+        <div class="menu-item"><span class="item-name">Veg Delight Pizza</span><span class="item-price">₹129</span></div>
+        <div class="menu-item"><span class="item-name">Paneer Pizza</span><span class="item-price">₹149</span></div>
+        <div class="menu-item"><span class="item-name">Mushroom Pizza</span><span class="item-price">₹169</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Pizza</span><span class="item-price">₹179</span></div>
+        <div class="menu-item"><span class="item-name">BBQ Chicken Pizza</span><span class="item-price">₹199</span></div>
+        <div class="menu-item"><span class="item-name">Chicken and Corn Pizza</span><span class="item-price">₹189</span></div>
+        <div class="menu-item"><span class="item-name">Mixed Pizza</span><span class="item-price">₹169</span></div>
+        <div class="menu-item"><span class="item-name">Mushroom Corn Pizza</span><span class="item-price">₹179</span></div>
+        <div class="menu-item"><span class="item-name">Paneer Corn Pizza</span><span class="item-price">₹159</span></div>
+
+        <div class="category-title">🍔 Juicy Burgers</div>
+        <div class="menu-item"><span class="item-name">Veg Burger</span><span class="item-price">₹99</span></div>
+        <div class="menu-item"><span class="item-name">Paneer Burger</span><span class="item-price">₹129</span></div>
+        <div class="menu-item"><span class="item-name">Crispy Veg Burger + Cheese</span><span class="item-price">₹119</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Burger</span><span class="item-price">₹159</span></div>
+        <div class="menu-item"><span class="item-name">Double Cheese Veg Burger</span><span class="item-price">₹149</span></div>
+        <div class="menu-item"><span class="item-name">Double Cheese Paneer Burger</span><span class="item-price">₹169</span></div>
+        <div class="menu-item"><span class="item-name">Double Cheese Chicken Burger</span><span class="item-price">₹189</span></div>
+        <div class="menu-item"><span class="item-name">Veg Double Patty Burger</span><span class="item-price">₹149</span></div>
+        <div class="menu-item"><span class="item-name">Paneer Double Patty Burger</span><span class="item-price">₹169</span></div>
+        <div class="menu-item"><span class="item-name">Chicken Double Patty Burger</span><span class="item-price">₹159</span></div>
+        
+        <div class="menu-item customizer-item"><span class="item-name">➕ Extra Cheese Add-on</span><span class="item-price">+ ₹20</span></div>
+        <div class="menu-item customizer-item"><span class="item-name">➕ Extra Veg Patty</span><span class="item-price">+ ₹30</span></div>
+        <div class="menu-item customizer-item"><span class="item-name">➕ Extra Paneer Patty</span><span class="item-price">+ ₹40</span></div>
+        <div class="menu-item customizer-item"><span class="item-name">➕ Extra Chicken Patty</span><span class="item-price">+ ₹40</span></div>
+    </div>
+
+    <script>
+        // Automated Sequence Logic
+        window.addEventListener('DOMContentLoaded', function() {
+            var page1 = document.getElementById('welcome-screen');
+            var page2 = document.getElementById('logo-screen');
+            var logoGraphic = document.getElementById('intro-logo');
+            var page3 = document.getElementById('main-content');
+            
+            // Step 1: Welcome page stays for 3 secs, then goes away
+            setTimeout(function() {
+                page1.style.opacity = '0';
+                page1.style.transform = 'scale(0.9) translateY(-10px)';
+                
+                setTimeout(function() {
+                    page1.style.display = 'none';
+                    page2.style.visibility = 'visible';
+                    page2.style.opacity = '1';
+                    
+                    // Logo animations triggers
+                    setTimeout(function() {
+                        logoGraphic.classList.add('intro-logo-animate');
+                    }, 100);
+                }, 1000);
+                
+            }, 3000); // 3 Seconds welcome
+
+            // Step 2: Logo stays for another 3 secs, then shifts to Menu layout
+            setTimeout(function() {
+                page2.style.opacity = '0';
+                page2.style.transform = 'scale(1.1)';
+                
+                setTimeout(function() {
+                    page2.style.display = 'none';
+                    page3.style.display = 'block';
+                    
+                    setTimeout(function() {
+                        page3.style.opacity = '1';
+                        page3.style.transform = 'translateY(0)';
+                    }, 50);
+                }, 1000);
+                
+            }, 7000); // Total 7 seconds loop sequence tracking
+        });
+    </script>
+</body>
+</html>
